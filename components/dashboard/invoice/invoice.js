@@ -63,6 +63,59 @@ export default function Invoice(props) {
           </div>
         </div>
       </section>
+
+      {/* Invoice items list */}
+      <div class="container py-24 px-5 mx-auto flex items-center md:flex-row flex-col">
+      <div class="w-full mx-auto overflow-auto">
+      <h1 className="text-md text-gray-800 pb-6 px-4 ">PRODUCT DETAILS</h1>
+      <table class="table-auto w-full text-left whitespace-no-wrap">
+        <thead>
+          <tr>
+            <th class="w-1/2 px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b rounded-tl rounded-bl">Item</th>
+            <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">Quantity</th>
+            <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">Price</th>
+          </tr>
+        </thead>
+        <tbody className="text-gray-500 text-sm">
+          <tr className="border-b">
+            <td class="px-4 py-6">First item</td>
+            <td class="px-4 py-6">5</td>
+            <td class="px-4 py-6">$120.00</td>
+          </tr>
+          <tr className="border-b">
+            <td class="px-4 py-6">Second item</td>
+            <td class="px-4 py-6">1</td>
+            <td class="px-4 py-6">$15.00</td>
+          </tr>
+          <tr className="border-b">
+            <td class="px-4 py-6">Third item</td>
+            <td class="px-4 py-6">6</td>
+            <td class="px-4 py-6">$150.00</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3"></td>
+            <td class="px-4 py-3">Total</td>
+            <td class="px-4 py-3 font-bold">$15.00</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3"></td>
+            <td class="px-4 py-3">Tax (10%)</td>
+            <td class="px-4 py-3 font-bold">$15.00</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3"></td>
+            <td class="px-4 py-3">Discount (5%)</td>
+            <td class="px-4 py-3 font-bold">$15.00</td>
+          </tr>
+          <tr className="text-lg">
+            <td class="px-4 py-3"></td>
+            <td class="px-4 py-3 font-bold">Grand Total</td>
+            <td class="px-4 py-3 font-bold">$15.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
     </div>
   );
 }
