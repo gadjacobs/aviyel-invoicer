@@ -1,9 +1,23 @@
 import React, { useState } from "react";
-
+import * as htmlToImage from "html-to-image";
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
+import { jsPDF } from "jspdf";
 
 export default function Invoice(props) {
+    // convert html to png image and add to pdf for printing
+  const printPdf = () => {
+    htmlToImage
+      .toPng(document.getElementById("myInvoice"), { quality: 0.95 })
+      .then(function (dataUrl) {
+        var link = document.createElement("a");
+        link.download = "my-image-name.jpeg";
+        const pdf = new jsPDF('p', 'pt', 'a4', false);
+        pdf.addImage(dataUrl, "PNG", 0, 0, 600, 0, undefined, false);
+        pdf.save("download.pdf");
+      });
+  };
   return (
-    <div className="p-6 bg-white">
+    <div id="myInvoice" className="p-6 bg-white">
       {/* header */}
       <section class="text-gray-600 body-font">
         <div class="container px-5 mx-auto flex items-center md:flex-row flex-col">
@@ -27,7 +41,7 @@ export default function Invoice(props) {
                 john.doe@gmail.com
               </h2>
             </div>
-            <button class="bg-white border border-blue-500 text-blue-500 inline-flex py-3 px-5 rounded-sm items-center hover:bg-blue-500 hover:text-white focus:outline-none">
+            <button class="bg-white border border-blue-500 text-blue-500 inline-flex py-3 px-5 rounded-sm items-center hover:bg-blue-500 hover:text-white focus:outline-none" onClick={printPdf}>
               <span class="flex items-start flex-col leading-none">
                 <span class="title-font font-medium">PRINT</span>
               </span>
