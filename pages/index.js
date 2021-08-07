@@ -4,6 +4,7 @@ import Dashboard from "../components/dashboard/layout/dashboard";
 import Splash from "../components/splashscreen/splash";
 
 export default function Home() {
+  // set loading screen delay of 2 seconds for splashscreen.
   useEffect(() => {
     setTimeout(() => {
       setTimePassed();
@@ -26,12 +27,12 @@ export default function Home() {
       {loading === true ? (
         <div className="App">
           <Splash
-            bg={"splash-bg "}
-            text="Please wait a moment, we're compiling Gad's reports 😊"
+            bg={"bg-blue-200 h-screen "}
+            text="Please wait a moment, we're compiling your invoices 😊"
           />
         </div>
       ) : (
-        <Dashboard />
+        <Dashboard title="INVOICE DETAILS" />
       )}
     </div>
   );
