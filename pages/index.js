@@ -2,20 +2,45 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Dashboard from "../components/dashboard/layout/dashboard";
 import Splash from "../components/splashscreen/splash";
+import InvoiceService from "../services/invoice.services";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [invoices, setInvoices] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  // Fetch all invoices
+  const getInvoices = () => {
+    InvoiceService.getInvoices().then(
+      (response) => {
+        let data = response.data.data;
+        setInvoices(data);
+        console.log(data);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+  };
+
+  // stop displaying splash screen and show landing screen.
+  const setTimePassed = () => {
+    setLoading(false);
+  };
+
   // set loading screen delay of 2 seconds for splashscreen.
   useEffect(() => {
+    // getInvoices();
     setTimeout(() => {
       setTimePassed();
     }, 2000);
   });
-
-  const [loading, setLoading] = useState(true);
-
-  const setTimePassed = () => {
-    setLoading(false);
-  };
 
   return (
     <div className="App">
@@ -32,7 +57,11 @@ export default function Home() {
           />
         </div>
       ) : (
-        <Dashboard title="INVOICE DETAILS" />
+        <Dashboard
+          title="INVOICE DETAILS"
+          invoices={invoices}
+          customers={customers}
+        />
       )}
     </div>
   );

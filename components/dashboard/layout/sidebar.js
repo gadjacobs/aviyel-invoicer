@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CreateInvoice from '../createInvoice/createInvoice';
 import Link from "next/link";
 
-export default function SideBar() {
+export default function SideBar({invoices, customers}) {
   const [showModal, setShowModal] = React.useState(false);
   return (
     <aside className="relative bg-gray-700 h-screen max-h-screen w-80 hidden sm:block shadow-xl">
@@ -21,7 +21,7 @@ export default function SideBar() {
         >
           New Invoice
         </button>
-        {showModal ? ( <CreateInvoice setShowModal={setShowModal} />): null}
+        {showModal ? ( <CreateInvoice setShowModal={setShowModal} customers={customers} />): null}
       </div>
       <nav className="text-white text-base font-semibold h-full max-h-80 md:max-h-96 xl:max-h-auto overflow-y-auto">
         <span className="flex items-center text-white py-4 pl-6 nav-item">

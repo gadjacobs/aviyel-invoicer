@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://34.83.72.245:3000/";
+const API_URL = "https://cors-anywhere.herokuapp.com/34.83.72.245:3000/";
 
 // Endpoint to fetch invoices list from backend
 const getInvoices = () => {

@@ -4,10 +4,10 @@ import Nav from "../layout/nav";
 import Footer from "./footer";
 import SideBar from "./sidebar";
 
-export default function dashboard({title}) {
+export default function dashboard({title, invoices, customers}) {
   return (
     <div className="bg-gray-100 flex">
-      <SideBar />
+      <SideBar invoices={invoices} customers={customers} />
       <div className="relative w-full flex flex-col h-screen overflow-y-hidden">
         <Nav />
         <div className="w-full h-screen overflow-x-hidden border-t flex flex-col">
