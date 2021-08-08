@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 export default function CreateInvoice({ setShowModal }) {
+
+  const [invoice, setInvoice] = useState([]);
+  const [itemName, setItemName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
+  
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -53,8 +59,47 @@ export default function CreateInvoice({ setShowModal }) {
               </button>
             </div>
             {/*body*/}
-            <div className="relative p-6 flex-auto">
-              <p className="text-blueGray-500 text-lg leading-relaxed">Body</p>
+            <div className="relative py-3 flex-auto">
+              <div class="container mx-auto flex items-center md:flex-row flex-col">
+                <div class="w-full mx-auto overflow-auto">
+                  <h1 className="text-md text-gray-800 pb-6 px-4 ">
+                    PRODUCT DETAILS
+                  </h1>
+                  <table class="table-auto w-full text-left whitespace-no-wrap overflow-x-hidden overflow-y-scroll">
+                    <thead>
+                      <tr>
+                        <th class="w-1/2 px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b rounded-tl rounded-bl">
+                          Item
+                        </th>
+                        <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
+                          Quantity
+                        </th>
+                        <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
+                          Price
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-gray-500 text-sm">
+                      <tr className="border-b">
+                        <td class="px-4 py-6">First item</td>
+                        <td class="px-4 py-6">5</td>
+                        <td class="px-4 py-6">$120.00</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td class="px-4 py-6">Second item</td>
+                        <td class="px-4 py-6">1</td>
+                        <td class="px-4 py-6">$15.00</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td class="px-4 py-6">Third item</td>
+                        <td class="px-4 py-6">6</td>
+                        <td class="px-4 py-6">$150.00</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
             {/*footer*/}
             <div className="flex items-center justify-end p-6 bg-gray-100 rounded-b">
