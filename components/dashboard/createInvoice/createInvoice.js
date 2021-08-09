@@ -173,7 +173,6 @@ export default function CreateInvoice({ setShowModal }) {
                           <input
                             id="name"
                             name="name"
-                            isRequired
                             type="text"
                             value={itemName}
                             placeholder="Enter the name of the item"
@@ -187,7 +186,6 @@ export default function CreateInvoice({ setShowModal }) {
                           <input
                             id="stock"
                             name="stock"
-                            isRequired
                             type="text"
                             value={quantity}
                             placeholder="1"
@@ -201,7 +199,6 @@ export default function CreateInvoice({ setShowModal }) {
                           <input
                             id="cost"
                             name="cost"
-                            isRequired
                             type="text"
                             value={price}
                             placeholder="0.00"
@@ -236,7 +233,6 @@ export default function CreateInvoice({ setShowModal }) {
                 <input
                   id="tax"
                   name="tax"
-                  isRequired
                   type="text"
                   value={tax}
                   placeholder="Tax (%)"
@@ -248,7 +244,6 @@ export default function CreateInvoice({ setShowModal }) {
                 <input
                   id="discount"
                   name="discount"
-                  isRequired
                   type="text"
                   value={discount}
                   placeholder="Discount (%)"

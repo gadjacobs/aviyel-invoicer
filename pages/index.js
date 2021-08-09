@@ -7,6 +7,7 @@ import InvoiceService from "../services/invoice.services";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
+  const [currentInvoice, setCurrentInvoice] = useState({});
   const [customers, setCustomers] = useState([]);
 
   // Fetch all invoices
@@ -29,6 +30,26 @@ export default function Home() {
     );
   };
 
+  // Fetch single invoice by id
+  const getCurrentInvoice = (id) => {
+    InvoiceService.getInvoiceById(id).then(
+      (response) => {
+        let data = response.data.data;
+        setCurrentInvoice(data);
+        console.log(data);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+  };
+
   // stop displaying splash screen and show landing screen.
   const setTimePassed = () => {
     setLoading(false);
@@ -36,11 +57,11 @@ export default function Home() {
 
   // set loading screen delay of 2 seconds for splashscreen.
   useEffect(() => {
-    // getInvoices();
+    getInvoices();
     setTimeout(() => {
       setTimePassed();
     }, 2000);
-  });
+  }, []);
 
   return (
     <div className="App">
@@ -60,7 +81,9 @@ export default function Home() {
         <Dashboard
           title="INVOICE DETAILS"
           invoices={invoices}
+          getCurrentInvoice={getCurrentInvoice}
           customers={customers}
+          currentInvoice={currentInvoice}
         />
       )}
     </div>
