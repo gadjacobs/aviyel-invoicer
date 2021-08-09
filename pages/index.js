@@ -82,6 +82,7 @@ export default function Home() {
         <Dashboard
           title="INVOICE DETAILS"
           invoices={invoices}
+          getInvoices={getInvoices}
           getCurrentInvoice={getCurrentInvoice}
           customers={customers}
           currentInvoice={currentInvoice}

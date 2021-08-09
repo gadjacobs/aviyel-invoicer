@@ -10,12 +10,14 @@ export default function dashboard({
   customers,
   getCurrentInvoice,
   currentInvoice,
+  getInvoices
 }) {
   return (
     <div className="bg-gray-100 flex">
       <SideBar
         invoices={invoices}
         customers={customers}
+        getInvoices={getInvoices}
         getCurrentInvoice={getCurrentInvoice}
       />
       <div className="relative w-full flex flex-col h-screen overflow-y-hidden">

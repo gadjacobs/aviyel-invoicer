@@ -2,44 +2,60 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import InvoiceService from "../../../services/invoice.services";
 
-export default function CreateInvoice({ setShowModal }) {
+export default function CreateInvoice({ setShowModal, getInvoices }) {
   const [invoice, setInvoice] = useState([]);
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
-  const [subTotal, setSubTotal] = useState("");
+  const [subTotal, setSubTotal] = useState(0);
   const [tax, setTax] = useState("");
   const [discount, setDiscount] = useState("");
-  const [grandTotal, setGrandTotal] = useState();
+  const [grandTotal, setGrandTotal] = useState(0);
   const [products, setProducts] = useState([]);
+  const [items, setItems] = useState([]);
 
-  // Fetch all invoices
-  const getInvoices = () => {
-    InvoiceService.getInvoices().then(
-      (response) => {
-        let data = response.data.data;
-        setInvoices(data);
-        console.log(data);
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        console.log(resMessage);
-      }
-    );
+  // convert all prices to integers and adding them up
+  const total = () => {
+    let finalValue = 0;
+    let number = products.map((item, i) => {
+      let num = ((parseFloat(item.cost)) * (parseFloat(item.stock)));
+      finalValue += num;
+      return finalValue;
+    });
+    console.log(finalValue);
+    return finalValue;
+  };
+
+  //calculate tax rate from total
+  const taxRate = (pc, tot) => {
+    let number = (parseInt(pc) / 100) * total();
+    return number || 0;
+    // setTaxValue(number);
+  };
+
+  //calculate discount from total
+  const discountRate = (pc, tot) => {
+    console.log(tot);
+    let number = (parseInt(pc) / 100) * total();
+    console.log("number " + number);
+    return number || 0;
+    // setDiscountValue(number);
   };
 
   const addProduct = (e) => {
     e.preventDefault();
-
+    setSubTotal(subTotal + (parseFloat(price) * parseInt(quantity)))
     if (itemName !== "" && quantity !== "" && price !== "") {
       InvoiceService.createProduct(quantity, itemName, "", price).then(
         (response) => {
           if (response.status) {
+            console.log(response.data)
+            setProducts([...products, response.data])
+            let obj = {
+              id: response.data.id,
+              quantity: response.data.stock
+            }
+            setItems([...items, obj])
             setPrice("");
             setQuantity("");
             setItemName("");
@@ -65,12 +81,13 @@ export default function CreateInvoice({ setShowModal }) {
   const createInvoice = (e) => {
     e.preventDefault();
 
-    if (itemName !== "" && quantity !== "" && price !== "") {
-      InvoiceService.createInvoice(price, "1", tax, discount, "cash", itemName).then(
+    if (items && tax && discount) {
+      InvoiceService.createInvoice(price, "1", tax, discount, "cash", items).then(
         (response) => {
           if (response.status) {
             toast.success("Invoice created successfully");
-            setShowModal()
+            setShowModal(false);
+            getInvoices()
           } else {
             toast.error(response.data);
           }
@@ -85,6 +102,8 @@ export default function CreateInvoice({ setShowModal }) {
           toast.error(resMessage);
         }
       );
+    } else {
+      toast.error("Please fix errors on form")
     }
   };
 
@@ -163,11 +182,18 @@ export default function CreateInvoice({ setShowModal }) {
                       </tr>
                     </thead>
                     <tbody className="text-gray-500 text-sm">
-                      <tr className="border-b">
-                        <td class="px-4 py-6">First item</td>
-                        <td class="px-4 py-6">5</td>
-                        <td class="px-4 py-6">$120.00</td>
+                      {
+                        products?.map((product, i) => {
+                          return (
+<tr className="border-b">
+                        <td class="px-4 py-6">{product.name}</td>
+                        <td class="px-4 py-6">{product.stock}</td>
+                        <td class="px-4 py-6">${product.cost}</td>
                       </tr>
+                          )
+                        })
+                      }
+
                       <tr className="">
                         <td class="px-4 py-6">
                           <input
@@ -207,7 +233,7 @@ export default function CreateInvoice({ setShowModal }) {
                             }}
                             className="block w-1/2 px-3 mx-1 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                           />
-                          <button className="flex w-auto ml-auto text-center text-blue-700 bg-white border mt-1 border-blue-500 py-2 px-3 focus:outline-none hover:bg-blue-700 hover:text-white align-middle justify-center py-auto">
+                          <button className="flex w-auto ml-auto text-center text-blue-700 bg-white border mt-1 border-blue-500 py-2 px-3 focus:outline-none hover:bg-blue-700 hover:text-white align-middle justify-center py-auto" onClick={(e)=> addProduct(e)}>
                             <svg
                               class="w-6 h-6"
                               fill="none"
@@ -237,7 +263,7 @@ export default function CreateInvoice({ setShowModal }) {
                   value={tax}
                   placeholder="Tax (%)"
                   onChange={(e) => {
-                    setPrice(e.target.value);
+                    setTax(e.target.value);
                   }}
                   className="block w-1/6 px-3 mx-1 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                 />
@@ -248,33 +274,33 @@ export default function CreateInvoice({ setShowModal }) {
                   value={discount}
                   placeholder="Discount (%)"
                   onChange={(e) => {
-                    setPrice(e.target.value);
+                    setDiscount(e.target.value);
                   }}
                   className="block w-1/6 px-3 mx-1 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                 />
                 <div className="w-2/6"></div>
                 <h3 className="w-1/6 text-gray-500">Sub Total: </h3>
-                <h3 className="w-1/6 text-gray-500 font-bold">$560</h3>
+                <h3 className="w-1/6 text-gray-500 font-bold">${subTotal}</h3>
               </div>
             </div>
             {/*footer*/}
             <div className="flex w-full items-center justify-between p-6 bg-gray-100 rounded-b">
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Tax</h3>
-                <p className="text-gray-500">$0.00</p>
+                <p className="text-gray-500">${taxRate(tax)}</p>
               </div>
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Discount</h3>
-                <p className="text-gray-500">$0.00</p>
+                <p className="text-gray-500">${discountRate(discount)}</p>
               </div>
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Grand Total</h3>
-                <p className="text-gray-500">$1053.60</p>
+                <p className="text-gray-500">${(subTotal + taxRate(tax) + discountRate(discount) )}</p>
               </div>
               <button
                 className="bg-blue-400 text-white active:bg-blue-600 font-medium uppercase text-sm px-6 md:px-10 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={() => setShowModal(false)}
+                onClick={(e) => createInvoice(e)}
               >
                 Save
               </button>

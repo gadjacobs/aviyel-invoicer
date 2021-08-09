@@ -132,8 +132,8 @@ export default function Invoice({ currentInvoice }) {
             <tbody className="text-gray-500 text-sm">
               {currentInvoice.Items?.map((item, i) => {
                 return (
-                  <tr className="border-b">
-                    <td class="px-4 py-6">{item.productId}</td>
+                  <tr className="border-b" key={item.id}>
+                    <td class="px-4 py-6">{item.Product?.name || "Unknown Product"}</td>
                     <td class="px-4 py-6">{item.quantity}</td>
                     <td class="px-4 py-6">${item.price}</td>
                   </tr>

@@ -8,6 +8,7 @@ export default function SideBar({
   customers,
   getCurrentInvoice,
   currentInvoice,
+  getInvoices
 }) {
   const [showModal, setShowModal] = React.useState(false);
 
@@ -44,7 +45,7 @@ export default function SideBar({
           New Invoice
         </button>
         {showModal ? (
-          <CreateInvoice setShowModal={setShowModal} customers={customers} />
+          <CreateInvoice setShowModal={setShowModal} customers={customers} getInvoices={getInvoices} />
         ) : null}
         <h1 className="text-md text-gray-500 pt-3">
           INVOICES -{" "}
