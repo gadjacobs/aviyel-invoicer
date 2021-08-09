@@ -3,6 +3,7 @@ import Head from "next/head";
 import Dashboard from "../components/dashboard/layout/dashboard";
 import Splash from "../components/splashscreen/splash";
 import InvoiceService from "../services/invoice.services";
+import { ToastContainer } from "react-toastify";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -86,6 +87,7 @@ export default function Home() {
           currentInvoice={currentInvoice}
         />
       )}
+      <ToastContainer />
     </div>
   );
 }
