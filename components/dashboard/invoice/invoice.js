@@ -151,7 +151,7 @@ export default function Invoice({ currentInvoice }) {
                   Tax ({currentInvoice.tax_percentage || "0"}%)
                 </td>
                 <td class="px-4 py-3 font-bold">
-                  $
+                 + $
                   {taxRate(currentInvoice.tax_percentage, total()).toFixed() ||
                     "0.00"}
                 </td>
@@ -162,7 +162,7 @@ export default function Invoice({ currentInvoice }) {
                   Discount ({currentInvoice.discount_percentage || "0"}%)
                 </td>
                 <td class="px-4 py-3 font-bold">
-                  $
+                  - $
                   {discount(
                     currentInvoice.discount_percentage,
                     total()
@@ -174,11 +174,11 @@ export default function Invoice({ currentInvoice }) {
                 <td class="px-4 py-3 font-bold">Grand Total</td>
                 <td class="px-4 py-3 font-bold">
                   $
-                  {(
+                  {
                     total() +
-                    taxRate(currentInvoice.tax_percentage, invoiceTotal) +
-                    discount(currentInvoice.discount_percentage, invoiceTotal)
-                  ).toFixed() || "0.00"}
+                    taxRate(currentInvoice.tax_percentage, total()) -
+                    discount(currentInvoice.discount_percentage, total())
+                   || "0.00"}
                 </td>
               </tr>
             </tbody>

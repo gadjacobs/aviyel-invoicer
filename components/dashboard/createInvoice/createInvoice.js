@@ -13,6 +13,8 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
   const [grandTotal, setGrandTotal] = useState(0);
   const [products, setProducts] = useState([]);
   const [items, setItems] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState({});
 
   // convert all prices to integers and adding them up
   const total = () => {
@@ -40,6 +42,26 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
     console.log("number " + number);
     return number || 0;
     // setDiscountValue(number);
+  };
+
+   // Fetch all customers
+   const getCustomers = () => {
+    InvoiceService.getCustomers().then(
+      (response) => {
+        let data = response.data.data;
+        setCustomers(data);
+        console.log(data);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
   };
 
   const addProduct = (e) => {
@@ -82,7 +104,7 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
     e.preventDefault();
 
     if (items && tax && discount) {
-      InvoiceService.createInvoice(price, "1", tax, discount, "cash", items).then(
+      InvoiceService.createInvoice(price, selectedCustomer.id, tax, discount, "cash", items).then(
         (response) => {
           if (response.status) {
             toast.success("Invoice created successfully");
@@ -107,6 +129,10 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
     }
   };
 
+  useEffect(()=> {
+    getCustomers()
+  }, [])
+
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -125,29 +151,25 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
                 <h2 class="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
                   CUSTOMER DETAILS
                 </h2>
-                <h1 class="md:text-lg text-sm font-medium title-font text-gray-800">
-                  JOHN DOE
-                </h1>
+                <select
+                defaultValue="Unknown User"
+                onChange={(e) => setSelectedCustomer(e.target.value)}
+                className="md:text-lg text-sm font-medium title-font text-gray-800 uppercase"
+              >
+                {
+                  customers?.map((customer, i) => {
+                    return (
+
+                      <option key={i} value={customer}>{customer.full_name}</option>
+                    )
+                  })
+                }
+              </select>
+
                 <h2 class="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
-                  john.doe@gmail.com
+                  {selectedCustomer.email}
                 </h2>
               </div>
-              <button className="mx-1 my-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none">
-                <svg
-                  class="w-10 h-10"
-                  fill="none"
-                  stroke="lightblue"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  ></path>
-                </svg>
-              </button>
               <button
                 className="ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                 onClick={() => setShowModal(false)}
@@ -185,7 +207,7 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
                       {
                         products?.map((product, i) => {
                           return (
-<tr className="border-b">
+<tr className="border-b" key={i}>
                         <td class="px-4 py-6">{product.name}</td>
                         <td class="px-4 py-6">{product.stock}</td>
                         <td class="px-4 py-6">${product.cost}</td>
@@ -291,11 +313,11 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
               </div>
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Discount</h3>
-                <p className="text-gray-500">${discountRate(discount)}</p>
+                <p className="text-gray-500">- ${discountRate(discount)}</p>
               </div>
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Grand Total</h3>
-                <p className="text-gray-500">${(subTotal + taxRate(tax) + discountRate(discount) )}</p>
+                <p className="text-gray-500">${(subTotal + taxRate(tax) - discountRate(discount) )}</p>
               </div>
               <button
                 className="bg-blue-400 text-white active:bg-blue-600 font-medium uppercase text-sm px-6 md:px-10 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
