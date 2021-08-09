@@ -24,22 +24,29 @@ export default function Invoice({ currentInvoice }) {
 
   // convert all prices to integers and adding them up
   const total = () => {
+    let finalValue = 0;
     let number = currentInvoice.Items?.map((item, i) => {
       let num = parseInt(item.price);
-      return num.reduce((a, b) => a + b, 0);
+      finalValue += num;
+      return finalValue;
     });
-    return number;
+    console.log(finalValue);
+    return finalValue;
   };
 
   //calculate tax rate from total
   const taxRate = (pc, tot) => {
     let number = (parseInt(pc) / 100) * tot;
+    return number;
     // setTaxValue(number);
   };
 
   //calculate discount from total
   const discount = (pc, tot) => {
+    console.log(tot);
     let number = (parseInt(pc) / 100) * tot;
+    console.log("number " + number);
+    return number;
     // setDiscountValue(number);
   };
 
@@ -132,16 +139,6 @@ export default function Invoice({ currentInvoice }) {
                   </tr>
                 );
               })}
-              <tr className="border-b">
-                <td class="px-4 py-6">First item</td>
-                <td class="px-4 py-6">5</td>
-                <td class="px-4 py-6">$120.00</td>
-              </tr>
-              <tr className="border-b">
-                <td class="px-4 py-6">Second item</td>
-                <td class="px-4 py-6">1</td>
-                <td class="px-4 py-6">$15.00</td>
-              </tr>
 
               <tr>
                 <td class="px-4 py-3"></td>
@@ -154,7 +151,9 @@ export default function Invoice({ currentInvoice }) {
                   Tax ({currentInvoice.tax_percentage || "0"}%)
                 </td>
                 <td class="px-4 py-3 font-bold">
-                  ${(taxRate(currentInvoice.tax_percentage, invoiceTotal)) || "0.00"}
+                  $
+                  {taxRate(currentInvoice.tax_percentage, total()).toFixed() ||
+                    "0.00"}
                 </td>
               </tr>
               <tr>
@@ -163,7 +162,11 @@ export default function Invoice({ currentInvoice }) {
                   Discount ({currentInvoice.discount_percentage || "0"}%)
                 </td>
                 <td class="px-4 py-3 font-bold">
-                  ${(discount(currentInvoice.discount_percentage, invoiceTotal)) || "0.00"}
+                  $
+                  {discount(
+                    currentInvoice.discount_percentage,
+                    total()
+                  ).toFixed() || "0.00"}
                 </td>
               </tr>
               <tr className="text-lg">
@@ -171,9 +174,11 @@ export default function Invoice({ currentInvoice }) {
                 <td class="px-4 py-3 font-bold">Grand Total</td>
                 <td class="px-4 py-3 font-bold">
                   $
-                  {(total() +
+                  {(
+                    total() +
                     taxRate(currentInvoice.tax_percentage, invoiceTotal) +
-                    discount(currentInvoice.discount_percentage, invoiceTotal) || "0.00")}
+                    discount(currentInvoice.discount_percentage, invoiceTotal)
+                  ).toFixed() || "0.00"}
                 </td>
               </tr>
             </tbody>
