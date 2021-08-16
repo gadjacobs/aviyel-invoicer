@@ -8,7 +8,7 @@ export default function SideBar({
   customers,
   getCurrentInvoice,
   currentInvoice,
-  getInvoices
+  getInvoices,
 }) {
   const [showModal, setShowModal] = React.useState(false);
 
@@ -20,7 +20,6 @@ export default function SideBar({
       finalValue += num;
       return finalValue;
     });
-    console.log(finalValue);
     return finalValue;
   };
 
@@ -34,7 +33,7 @@ export default function SideBar({
           className="text-3xl font-semibold uppercase hover:text-gray-300"
           href="/"
         >
-          <span class="text-white font-semibold uppercase hover:text-gray-300 ml-3 text-md font-family-karla">
+          <span className="text-white font-semibold uppercase hover:text-gray-300 ml-3 text-md font-family-karla">
             Aviyel Invoicer
           </span>
         </Link>
@@ -45,7 +44,11 @@ export default function SideBar({
           New Invoice
         </button>
         {showModal ? (
-          <CreateInvoice setShowModal={setShowModal} customers={customers} getInvoices={getInvoices} />
+          <CreateInvoice
+            setShowModal={setShowModal}
+            customers={customers}
+            getInvoices={getInvoices}
+          />
         ) : null}
         <h1 className="text-md text-gray-500 pt-3">
           INVOICES -{" "}
@@ -58,29 +61,29 @@ export default function SideBar({
             <a
               onClick={() => getCurrentInvoice(invoice.id)}
               key={invoice.id}
-              class="flex flex-col pl-6 pr-3 py-3 border-b border-gray-500 mx-auto max-w-sm relative"
+              className="flex flex-col pl-6 pr-3 py-3 border-b border-gray-500 mx-auto max-w-sm relative"
             >
               <div>
-                <div class="flex items-center flex-wrap mt-auto w-full">
-                  <span class="text-gray-200 inline-flex items-center py-2">
+                <div className="flex items-center flex-wrap mt-auto w-full">
+                  <span className="text-gray-200 inline-flex items-center py-2">
                     #INV-{String(invoice.id).padStart(4, "0")}
                   </span>
-                  <span class="text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-xs font-light py-1">
+                  <span className="text-gray-400 mr-3 inline-flex items-center ml-auto leading-none text-xs font-light py-1">
                     {moment(invoice.createdAt).calendar()}
                   </span>
                 </div>
               </div>
               <div>
-                <h3 class="font-light text-sm text-gray-200">
+                <h3 className="font-light text-sm text-gray-200">
                   Items - {invoice.Items.length}
                 </h3>
-                <div class="flex items-center flex-wrap mt-auto w-full">
+                <div className="flex items-center flex-wrap mt-auto w-full">
                   <span className="text-sm inline-flex items-center text-blue-400">
                     {invoice.Customer
                       ? invoice.Customer.full_name
                       : "Unknown User"}
                   </span>
-                  <span class="text-gray-400 mr-3 inline-flex items-center ml-auto leading-none pr-3 py-1">
+                  <span className="text-gray-400 mr-3 inline-flex items-center ml-auto leading-none pr-3 py-1">
                     ${total(invoice, i) || "0.00"}
                   </span>
                 </div>

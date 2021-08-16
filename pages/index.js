@@ -17,7 +17,6 @@ export default function Home() {
       (response) => {
         let data = response.data.data;
         setInvoices(data);
-        console.log(data);
       },
       (error) => {
         const resMessage =
@@ -26,7 +25,6 @@ export default function Home() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        console.log(resMessage);
       }
     );
   };
@@ -37,7 +35,6 @@ export default function Home() {
       (response) => {
         let data = response.data.data;
         setCurrentInvoice(data);
-        console.log(data);
       },
       (error) => {
         const resMessage =
@@ -46,7 +43,6 @@ export default function Home() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        console.log(resMessage);
       }
     );
   };

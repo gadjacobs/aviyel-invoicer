@@ -20,11 +20,10 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
   const total = () => {
     let finalValue = 0;
     let number = products.map((item, i) => {
-      let num = ((parseFloat(item.cost)) * (parseFloat(item.stock)));
+      let num = parseFloat(item.cost) * parseFloat(item.stock);
       finalValue += num;
       return finalValue;
     });
-    console.log(finalValue);
     return finalValue;
   };
 
@@ -37,20 +36,17 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
 
   //calculate discount from total
   const discountRate = (pc, tot) => {
-    console.log(tot);
     let number = (parseInt(pc) / 100) * total();
-    console.log("number " + number);
     return number || 0;
     // setDiscountValue(number);
   };
 
-   // Fetch all customers
-   const getCustomers = () => {
+  // Fetch all customers
+  const getCustomers = () => {
     InvoiceService.getCustomers().then(
       (response) => {
         let data = response.data.data;
         setCustomers(data);
-        console.log(data);
       },
       (error) => {
         const resMessage =
@@ -59,25 +55,23 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        console.log(resMessage);
       }
     );
   };
 
   const addProduct = (e) => {
     e.preventDefault();
-    setSubTotal(subTotal + (parseFloat(price) * parseInt(quantity)))
+    setSubTotal(subTotal + parseFloat(price) * parseInt(quantity));
     if (itemName !== "" && quantity !== "" && price !== "") {
       InvoiceService.createProduct(quantity, itemName, "", price).then(
         (response) => {
           if (response.status) {
-            console.log(response.data)
-            setProducts([...products, response.data])
+            setProducts([...products, response.data]);
             let obj = {
               id: response.data.id,
-              quantity: response.data.stock
-            }
-            setItems([...items, obj])
+              quantity: response.data.stock,
+            };
+            setItems([...items, obj]);
             setPrice("");
             setQuantity("");
             setItemName("");
@@ -104,12 +98,19 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
     e.preventDefault();
 
     if (items && tax && discount) {
-      InvoiceService.createInvoice(price, selectedCustomer.id, tax, discount, "cash", items).then(
+      InvoiceService.createInvoice(
+        price,
+        selectedCustomer.id,
+        tax,
+        discount,
+        "cash",
+        items
+      ).then(
         (response) => {
           if (response.status) {
             toast.success("Invoice created successfully");
             setShowModal(false);
-            getInvoices()
+            getInvoices();
           } else {
             toast.error(response.data);
           }
@@ -125,13 +126,13 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
         }
       );
     } else {
-      toast.error("Please fix errors on form")
+      toast.error("Please fix errors on form");
     }
   };
 
-  useEffect(()=> {
-    getCustomers()
-  }, [])
+  useEffect(() => {
+    getCustomers();
+  }, []);
 
   return (
     <>
@@ -147,26 +148,25 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
               <h3 className="w-3/12 text-md text-gray-500 font-medium uppercase align-baseline">
                 Order No: 1234
               </h3>
-              <div class="ml-auto flex flex-col md:mb-0 mb-6 pr-0 w-full md:w-auto md:text-right text-center">
-                <h2 class="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
+              <div className="ml-auto flex flex-col md:mb-0 mb-6 pr-0 w-full md:w-auto md:text-right text-center">
+                <h2 className="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
                   CUSTOMER DETAILS
                 </h2>
                 <select
-                defaultValue="Unknown User"
-                onChange={(e) => setSelectedCustomer(e.target.value)}
-                className="md:text-lg text-sm font-medium title-font text-gray-800 uppercase"
-              >
-                {
-                  customers?.map((customer, i) => {
+                  defaultValue="Unknown User"
+                  onChange={(e) => setSelectedCustomer(e.target.value)}
+                  className="md:text-lg text-sm font-medium title-font text-gray-800 uppercase"
+                >
+                  {customers?.map((customer, i) => {
                     return (
+                      <option key={i} value={customer}>
+                        {customer.full_name}
+                      </option>
+                    );
+                  })}
+                </select>
 
-                      <option key={i} value={customer}>{customer.full_name}</option>
-                    )
-                  })
-                }
-              </select>
-
-                <h2 class="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
+                <h2 className="text-xs text-gray-500 tracking-widest font-medium title-font mb-1">
                   {selectedCustomer.email}
                 </h2>
               </div>
@@ -181,43 +181,41 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
             </div>
             {/*body*/}
             <div className="relative py-3 flex-auto">
-              <div class="container mx-auto flex items-center md:flex-row flex-col">
-                <div class="w-full mx-auto overflow-auto pb-12 md:pb-20">
+              <div className="container mx-auto flex items-center md:flex-row flex-col">
+                <div className="w-full mx-auto overflow-auto pb-12 md:pb-20">
                   <h1 className="text-md text-gray-800 pb-6 px-4 ">
                     PRODUCT DETAILS
                   </h1>
                   <table
-                    class="table-auto w-full text-left whitespace-no-wrap overflow-x-hidden overflow-y-scroll
+                    className="table-auto w-full text-left whitespace-no-wrap overflow-x-hidden overflow-y-scroll
                   "
                   >
                     <thead>
                       <tr>
-                        <th class="w-1/2 px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b rounded-tl rounded-bl">
+                        <th className="w-1/2 px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b rounded-tl rounded-bl">
                           Item
                         </th>
-                        <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
+                        <th className="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
                           Quantity
                         </th>
-                        <th class="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
+                        <th className="px-4 py-3 uppercase title-font tracking-wider font-medium text-gray-900 text-sm bg-white border-t border-b">
                           Price
                         </th>
                       </tr>
                     </thead>
                     <tbody className="text-gray-500 text-sm">
-                      {
-                        products?.map((product, i) => {
-                          return (
-<tr className="border-b" key={i}>
-                        <td class="px-4 py-6">{product.name}</td>
-                        <td class="px-4 py-6">{product.stock}</td>
-                        <td class="px-4 py-6">${product.cost}</td>
-                      </tr>
-                          )
-                        })
-                      }
+                      {products?.map((product, i) => {
+                        return (
+                          <tr className="border-b" key={i}>
+                            <td className="px-4 py-6">{product.name}</td>
+                            <td className="px-4 py-6">{product.stock}</td>
+                            <td className="px-4 py-6">${product.cost}</td>
+                          </tr>
+                        );
+                      })}
 
                       <tr className="">
-                        <td class="px-4 py-6">
+                        <td className="px-4 py-6">
                           <input
                             id="name"
                             name="name"
@@ -230,7 +228,7 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
                             className="block w-full px-3 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                           />
                         </td>
-                        <td class="px-4 py-6">
+                        <td className="px-4 py-6">
                           <input
                             id="stock"
                             name="stock"
@@ -243,7 +241,7 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
                             className="block w-full px-3 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                           />
                         </td>
-                        <td class="px-4 py-6 flex flex-row">
+                        <td className="px-4 py-6 flex flex-row">
                           <input
                             id="cost"
                             name="cost"
@@ -255,18 +253,21 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
                             }}
                             className="block w-1/2 px-3 mx-1 py-2 mt-1 text-gray-700 border border-gray-300 form-input focus:border-blue-700 text-sm"
                           />
-                          <button className="flex w-auto ml-auto text-center text-blue-700 bg-white border mt-1 border-blue-500 py-2 px-3 focus:outline-none hover:bg-blue-700 hover:text-white align-middle justify-center py-auto" onClick={(e)=> addProduct(e)}>
+                          <button
+                            className="flex w-auto ml-auto text-center text-blue-700 bg-white border mt-1 border-blue-500 py-2 px-3 focus:outline-none hover:bg-blue-700 hover:text-white align-middle justify-center py-auto"
+                            onClick={(e) => addProduct(e)}
+                          >
                             <svg
-                              class="w-6 h-6"
+                              className="w-6 h-6"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLlinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                               ></path>
                             </svg>
@@ -317,7 +318,9 @@ export default function CreateInvoice({ setShowModal, getInvoices }) {
               </div>
               <div className="w-1/6">
                 <h3 className="text-gray-500 font-bold">Grand Total</h3>
-                <p className="text-gray-500">${(subTotal + taxRate(tax) - discountRate(discount) )}</p>
+                <p className="text-gray-500">
+                  ${subTotal + taxRate(tax) - discountRate(discount)}
+                </p>
               </div>
               <button
                 className="bg-blue-400 text-white active:bg-blue-600 font-medium uppercase text-sm px-6 md:px-10 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
