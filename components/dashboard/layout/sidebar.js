@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CreateInvoice from "../createInvoice/createInvoice";
+import CreateCustomer from "../createCustomer/createCustomer";
 import Link from "next/link";
 import moment from "moment";
 
@@ -10,7 +11,8 @@ export default function SideBar({
   currentInvoice,
   getInvoices,
 }) {
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
 
   // convert all prices to integers and adding them up
   const total = (invoice, i) => {
@@ -37,15 +39,30 @@ export default function SideBar({
             Aviyel Invoicer
           </span>
         </Link>
-        <button
-          className="w-full text-gray-700 bg-white cta-btn font-semibold py-2 mt-10 shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center"
-          onClick={() => setShowModal(true)}
-        >
-          New Invoice
-        </button>
+        <div className="flex">
+          <button
+            className="w-1/2 text-gray-700 bg-white cta-btn font-semibold py-2 mt-10 shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center border-r border-gray-800"
+            onClick={() => setShowModal(true)}
+          >
+            New Invoice
+          </button>
+          <button
+            className="w-1/2 text-gray-700 bg-white cta-btn font-semibold py-2 mt-10 shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center border-l border-gray-800"
+            onClick={() => setShowCustomerModal(true)}
+          >
+            New Customer
+          </button>
+        </div>
         {showModal ? (
           <CreateInvoice
             setShowModal={setShowModal}
+            customers={customers}
+            getInvoices={getInvoices}
+          />
+        ) : null}
+        {showCustomerModal ? (
+          <CreateCustomer
+            setShowModal={setShowCustomerModal}
             customers={customers}
             getInvoices={getInvoices}
           />
